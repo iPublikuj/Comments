@@ -1,0 +1,86 @@
+<div id="comments">
+	<div n:class="comments, $maxDepth > 1 ? nested, !(($onlyRegistered && !$activeAuthor->isGuest()) || !$onlyRegistered)?no-response">
+
+		<h3 class="comments-meta">
+			<span class="comments-count">{_'comments.headings.comments', $commentsCount}</span>
+		</h3>
+
+		<div n:snippet="flashes">
+			<div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type}">{$flash->message}</div>
+		</div>
+
+		<ul n:snippet="comments" class="level1">
+			{foreach $comments as $comment}
+				{include 'comment.latte', level => 1, comment => $comment, author => $_comments->createAuthor($comment->getAuthor())}
+			{/foreach}
+		</ul>
+
+		<div n:if="$enabledPosting" id="respond" class="panel panel-default mt20">
+			<div class="panel-heading">
+				<h3 class="panel-title"><i class="glyphicon glyphicon-comment"></i> {_'comments.headings.leaveComment'}</h3>
+			</div>
+			<div class="panel-body">
+				<p n:if="$activeAuthor->getType() != 'guest'" class="user">
+					{_'comments.messages.loggedInAs', null, ['name' => $activeAuthor->getName()]}
+					{if $activeAuthor->getType() != 'system'}({$activeAuthor->getType()}) - <a n:href="logout" class="logout btn btn-sm btn-default"><i class="glyphicon glyphicon-log-out"></i> {_'comments.buttons.logOut'}</a>{/if}
+				</p>
+				<p n:if="$activeAuthor->isGuest()" class="user">
+					{if $onlyRegistered}{_'comments.messages.loginToLeaveComment'}{else}{_'comments.messages.commentingAsGuest'}{/if}
+					{if $enabledSocialConnect}{_'comments.messages.optionalLoginBellow'}{/if}
+				</p>
+				<p n:if="$activeAuthor->isGuest() && $enabledSocialConnect" class="connects">
+					<a n:if="$enabledSocial['facebook']" n:href="fbLogin-open!" class="facebook-connect btn btn-sm btn-facebook"><i class="fa fa-facebook"></i> {_'comments.buttons.facebook'}</a>
+					<a n:if="$enabledSocial['twitter']" href="" class="twitter-connect btn btn-sm btn-twitter"><i class="fa fa-twitter"></i> {_'comments.buttons.twitter'}</a>
+					<a n:if="$enabledSocial['google']" n:href="googleLogin-open!" class="twitter-connect btn btn-sm btn-google-plus"><i class="fa fa-google-plus"></i> {_'comments.buttons.google'}</a>
+					<a n:if="$enabledSocial['github']" n:href="githubLogin-open!" class="twitter-connect btn btn-sm btn-github"><i class="fa fa-github"></i> {_'comments.buttons.github'}</a>
+				</p>
+
+				<div n:snippet="formArea">
+					<form n:if="($onlyRegistered && !$activeAuthor->isGuest()) || !$onlyRegistered" n:name="form" class="form-horizontal" role="form">
+						<div n:if="$activeAuthor->isGuest()" n:class="form-group, author, $form['author']->isRequired() ? required, $form['author']->errors ? has-error">
+							<div class="col-sm-5">
+								<input n:name="author" class="form-control" />
+							</div>
+							<label n:name="author" class="col-sm-5 control-label text-left">{_'comments.form.author'}</label>
+						</div>
+						<div n:if="$activeAuthor->isGuest()" n:class="form-group, email, $form['email']->isRequired() ? required, $form['email']->errors ? has-error">
+							<div class="col-sm-5">
+								<input n:name="email" class="form-control" />
+							</div>
+							<label n:name="email" class="col-sm-5 control-label text-left">{_'comments.form.email'}</label>
+						</div>
+						<div n:if="$activeAuthor->isGuest()" n:class="form-group, url, $form['website']->isRequired() ? required, $form['website']->errors ? has-error">
+							<div class="col-sm-5">
+								<input n:name="website" class="form-control" />
+							</div>
+							<label n:name="website" class="col-sm-5 control-label text-left">{_'comments.form.website'}</label>
+						</div>
+
+						<div n:class="form-group, content, $form['content']->errors ? has-error">
+							<div class="col-xs-12">
+								<textarea n:name="content" class="form-control"></textarea>
+							</div>
+						</div>
+
+						<div class="actions">
+							<button n:name="save" accesskey="s" class="btn btn-default"><i class="glyphicon glyphicon-send"></i> {_'comments.buttons.save'}</button>
+							<a href="#" class="btn btn-link cancel">{_'comments.buttons.cancel'}</a>
+							<p class="submit-message">
+								{_'comments.messages.submittingComment'}
+							</p>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+{*
+<script type="text/javascript">
+	jQuery(function($) {
+		$('#comments').Comment();
+	});
+</script>
+*}

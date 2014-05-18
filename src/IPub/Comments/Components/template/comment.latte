@@ -1,0 +1,47 @@
+<li n:if="$comment->isApproved() || $_comments->isOwner($comment)">
+	<div id="comment-{$comment->getId()}" class="comment comment-by-admin">
+
+		<div n:class="comment-head, $showAvatar ?with-avatar">
+
+			<div n:if="$showAvatar" class="avatar thumbnail">
+				{$author|showAvatar:40|noescape}
+			</div>
+
+			<div n:if="$author->getWebsite()" class="author">
+				<a href="{$author->getWebsite()}" title="{$author->getWebsite()}" rel="nofollow">{$author->getName()}</a>
+			</div>
+			<div n:if="!$author->getWebsite()" class="author">
+				{$author->getName()}
+			</div>
+
+			<div class="meta">
+				{$comment->getCreated()|date:'%d %B %Y at %H:%M'}
+				| <a class="permalink" href="{plink this}#comment-{$comment->getId()}">#</a>
+			</div>
+
+		</div>
+
+		<div class="comment-body">
+
+			<p class="content">
+				{$comment->getContent()|formatComment|noescape}
+			</p>
+
+			<div n:if="(($onlyRegistered && !$activeAuthor->isGuest()) || !$onlyRegistered) && $level < $maxDepth" class="reply">
+				<a href="#" rel="nofollow" class="btn btn-xs btn-default"><i class="glyphicon glyphicon-share-alt"></i> {_'comments.buttons.reply'}</a>
+			</div>
+
+			<div n:if="$comment->isWaitingApproval()" class="moderation alert alert-info">
+				{_'comments.messages.awaitingModeration'}
+			</div>
+
+		</div>
+
+	</div>
+
+	<ul n:if="$comment->getChildren() && $level < $maxDepth" class="level{$level + 1}">
+		{foreach $comment->getChildren() as $subcomment}
+			{include 'comment.latte', level => $subcomment->getLevel(), comment => $subcomment, author => $_comments->createAuthor($subcomment->getAuthor())}
+		{/foreach}
+	</ul>
+</li>

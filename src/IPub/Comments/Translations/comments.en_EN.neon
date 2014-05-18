@@ -1,0 +1,49 @@
+#
+# Comments extension translations
+#
+# @language		EN
+#
+# @copyright	More in license.md
+# @license		http://www.ipublikuj.eu
+# @author		Adam Kadlec http://www.ipublikuj.eu
+# @package		iPublikuj:Comments!
+# @subpackage	Translations
+# @since		5.0
+#
+# @date			02.05.14
+#
+
+form:
+	author	: "Name"
+	email	: "E-mail"
+	website	: "Webpage"
+
+buttons:
+	save		: "Add comment"
+	reply		: "Reply"
+	logOut		: "Sign out"
+	cancel		: "Cancel"
+	facebook	: "Facebook"
+	twitter		: "Twitter"
+	google		: "Google"
+	github		: "Github"
+
+headings:
+	comments		: "No comments|Comments (%count%)"
+	leaveComment	: "Leave comment"
+
+messages:
+	loginToLeaveComment			: "Login to post a comment."
+	commentingAsGuest			: "Coomenting like guest."
+	optionalLoginBellow			: "You could use alternative quick login bellow."
+	submittingComment			: "Saving comment..."
+	loggedInAs					: "You are logged in as %name%."
+	enterCommentContent			: "Please write comment content."
+	yourNameIsRequired			: "Your name is required."
+	yourEmailIsRequired			: "Your email address is required."
+	enterValidEmailAddress		: "Please enter valid email address."
+	enterValidUrlAddress		: "Please enter valid website url."
+	postingToQuickly			: "You are adding comments to quickly. Please slow down."
+	postNotSaved				: "Your post could not be saved. Please try again later."
+	awaitingModeration			: "This comment is awaiting for moderator."
+	socialAuthenticationFailed	: "Sorry bro, %network% authentication failed."
