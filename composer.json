@@ -3,7 +3,7 @@
 	"type"			: "library",
 	"description"	: "Nette extension for adding comments support for various items on iPublikuj framework",
 	"keywords"		: ["comments", "nette comments", "comments support managing", "nette", "ipub", "framework", "tools"],
-	"homepage"		: "https://github.com/ipublikuj-eu/Comments",
+	"homepage"		: "https://github.com/iPublikuj/Comments",
 	"license"		: ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
 
 	"authors": [
@@ -15,7 +15,7 @@
 
 	"support":{
 		"email"		:"support@ipublikuj.eu",
-		"issues"	:"https://github.com/ipublikuj-eu/Comments/issues"
+		"issues"	:"https://github.com/iPublikuj/Comments/issues"
 	},
 
 	"require": {
