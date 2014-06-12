@@ -1,6 +1,6 @@
 <?php
 /**
- * Comments.php
+ * Control.php
  *
  * @copyright	More in license.md
  * @license		http://www.ipublikuj.eu
@@ -15,11 +15,14 @@
 namespace IPub\Comments\Components;
 
 use Nette;
-use Nette\Application\UI;
+use Nette\Application;
 use Nette\Caching;
-use Nette\Diagnostics\Debugger;
 use Nette\Http;
+use Nette\Localization;
 
+use Tracy\Debugger;
+
+use IPub;
 use IPub\Comments\CommentsFactory;
 use IPub\Comments\Configuration;
 use IPub\Comments\Entities;
@@ -32,7 +35,7 @@ use Kdyby\Facebook;
 use Kdyby\Google;
 use Kdyby\Github;
 
-class Comments extends UI\Control
+class Control extends Application\UI\Control
 {
 	/**
 	 * Occurs when user is successfully logged in via social network
@@ -72,7 +75,7 @@ class Comments extends UI\Control
 	protected $templatePath;
 
 	/**
-	 * @var Nette\Localization\ITranslator
+	 * @var Localization\ITranslator
 	 */
 	protected $translator;
 
@@ -99,9 +102,9 @@ class Comments extends UI\Control
 	/**
 	 * Inject translator service
 	 *
-	 * @param Nette\Localization\ITranslator $translator
+	 * @param Localization\ITranslator $translator
 	 */
-	public function injectTranslator(Nette\Localization\ITranslator $translator)
+	public function injectTranslator(Localization\ITranslator $translator)
 	{
 		$this->translator = $translator;
 	}
@@ -142,6 +145,14 @@ class Comments extends UI\Control
 			$this->presenter->redrawControl(NULL, FALSE);
 			// Invalidate list & form snippets
 			$this->redrawControl('contributors');
+		}
+
+		// Handle static files if it is possible
+		if ($this->webLoader instanceof WebLoader\LoaderFactory) {
+			// Add JS file to web loader
+			$presenter['js']->getCompiler()->getCollection()->addFile(realpath(__DIR__ .'/../../../../client-side/') .'/comments.js');
+			// Add CSS file to web loader
+			$presenter['css']->getCompiler()->getCollection()->addFile(realpath(__DIR__ .'/../../../../client-side/') .'/comments.css');
 		}
 	}
 
@@ -224,21 +235,13 @@ class Comments extends UI\Control
 		$this->template->maxDepth				= $this->configuration->displaying->maxDepth;
 
 		// Check if translator is available
-		if ($this->getTranslator() instanceof Nette\Localization\ITranslator) {
+		if ($this->getTranslator() instanceof Localization\ITranslator) {
 			$this->template->setTranslator($this->getTranslator());
 		}
 
 		// Get component template file
 		$templatePath = !empty($this->templatePath) ? $this->templatePath : __DIR__ . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
 		$this->template->setFile($templatePath);
-
-		// Handle static files if it is possible
-		if ($this->webLoader instanceof WebLoader\LoaderFactory) {
-			// Add JS file to web loader
-			$this->presenter['js']->getCompiler()->getCollection()->addFile(realpath(__DIR__ .'/../../../../client-side/') .'/comments.js');
-			// Add CSS file to web loader
-			$this->presenter['css']->getCompiler()->getCollection()->addFile(realpath(__DIR__ .'/../../../../client-side/') .'/comments.css');
-		}
 
 		// Render component template
 		$this->template->render();
@@ -450,11 +453,11 @@ class Comments extends UI\Control
 	}
 
 	/**
-	 * @return UI\Form
+	 * @return Application\UI\Form
 	 */
 	protected function createComponentForm()
 	{
-		$form = new UI\Form();
+		$form = new Application\UI\Form();
 
 		// Add form CSRF protection
 		$form->addProtection();
@@ -506,13 +509,13 @@ class Comments extends UI\Control
 	}
 
 	/**
-	 * @param UI\Form $form
+	 * @param Application\UI\Form $form
 	 *
 	 * @return bool
 	 *
 	 * @throws \Nette\NotSupportedException
 	 */
-	public  function validatePostForm(UI\Form $form)
+	public  function validatePostForm(Application\UI\Form $form)
 	{
 		// Only registered users can comment
 		if ($this->configuration->posting->registeredOnly && $this->commentsFactory->getAuthor()->isGuest()) {
@@ -557,9 +560,9 @@ class Comments extends UI\Control
 	}
 
 	/**
-	 * @param UI\Form $form
+	 * @param Application\UI\Form $form
 	 */
-	public function postFormSubmitted(UI\Form $form)
+	public function postFormSubmitted(Application\UI\Form $form)
 	{
 		if ($form->hasErrors()) {
 			return;
@@ -648,11 +651,11 @@ class Comments extends UI\Control
 	}
 
 	/**
-	 * @param Nette\Localization\ITranslator $translator
+	 * @param Localization\ITranslator $translator
 	 *
 	 * @return $this
 	 */
-	public function setTranslator(Nette\Localization\ITranslator $translator)
+	public function setTranslator(Localization\ITranslator $translator)
 	{
 		$this->translator = $translator;
 
@@ -660,11 +663,11 @@ class Comments extends UI\Control
 	}
 
 	/**
-	 * @return Nette\Localization\ITranslator|null
+	 * @return Localization\ITranslator|null
 	 */
 	public function getTranslator()
 	{
-		if ($this->translator instanceof Nette\Localization\ITranslator) {
+		if ($this->translator instanceof Localization\ITranslator) {
 			return $this->translator;
 		}
 
@@ -713,30 +716,5 @@ class Comments extends UI\Control
 		}
 
 		return FALSE;
-	}
-
-	/**
-	 * @param  string|NULL
-	 *
-	 * @return Nette\Templating\ITemplate
-	 */
-	protected function createTemplate($class = NULL)
-	{
-		// Init template
-		$template = parent::createTemplate($class);
-
-		// Check if Translation service exists
-		if ($this->translator instanceof \Kdyby\Translation\Translator) {
-			// Register template helpers
-			$template->registerHelperLoader(callback($this->translator->createTemplateHelpers(), 'loader'));
-		}
-
-		// Add factory to template
-		$template->_comments = $this->commentsFactory;
-
-		// Register template helpers
-		$template->registerHelperLoader(callback($this->commentsFactory->createTemplateHelpers(), 'loader'));
-
-		return $template;
 	}
 }

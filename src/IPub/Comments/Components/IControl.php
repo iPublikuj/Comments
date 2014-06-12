@@ -1,6 +1,6 @@
 <?php
 /**
- * Comments.php
+ * IControl.php
  *
  * @copyright	More in license.md
  * @license		http://www.ipublikuj.eu
@@ -14,10 +14,10 @@
 
 namespace IPub\Comments\Components;
 
-interface IComments
+interface IControl
 {
 	/**
-	 * @return Comments
+	 * @return Control
 	 */
 	function create();
 }

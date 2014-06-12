@@ -16,7 +16,8 @@ namespace IPub\Comments\Users;
 
 use Nette;
 use Nette\Caching;
-use Nette\Diagnostics\Debugger;
+
+use Tracy\Debugger;
 
 use IPub\Comments\Entities;
 

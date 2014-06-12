@@ -14,10 +14,10 @@
 
 namespace IPub\Comments;
 
-use Nette\ArrayHash;
-use Nette\Diagnostics\Debugger;
-use Nette\Http\Url;
+use Nette;
 use Nette\Object;
+
+use Tracy\Debugger;
 
 class Configuration extends Object
 {
@@ -32,7 +32,7 @@ class Configuration extends Object
 	public $displaying;
 
 	/**
-	 * @var ArrayHash
+	 * @var Nette\ArrayHash
 	 */
 	protected $socialConnections;
 
@@ -42,9 +42,9 @@ class Configuration extends Object
 	 */
 	public function __construct(array $posting, array $displaying)
 	{
-		$this->posting				= $posting instanceof ArrayHash ?: (new ArrayHash())->from($posting);
-		$this->displaying			= $displaying instanceof ArrayHash ?: (new ArrayHash())->from($displaying);
-		$this->socialConnections	= new ArrayHash();
+		$this->posting				= $posting instanceof Nette\ArrayHash ?: (new Nette\ArrayHash())->from($posting);
+		$this->displaying			= $displaying instanceof Nette\ArrayHash ?: (new Nette\ArrayHash())->from($displaying);
+		$this->socialConnections	= new Nette\ArrayHash();
 	}
 
 	/**
@@ -95,7 +95,7 @@ class Configuration extends Object
 	}
 
 	/**
-	 * @return ArrayHash
+	 * @return Nette\ArrayHash
 	 */
 	public function getSocialNetworks()
 	{

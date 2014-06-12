@@ -15,7 +15,8 @@
 namespace IPub\Comments;
 
 use Nette;
-use Nette\Diagnostics\Debugger;
+
+use Tracy\Debugger;
 
 class SessionStorage extends Nette\Object
 {
@@ -40,20 +41,22 @@ class SessionStorage extends Nette\Object
 
 	/**
 	 * Stores the given ($key, $value) pair, so that future calls to
-	 * getPersistentData($key) return $value. This call may be in another request.
+	 * get($key) return $value. This call may be in another request.
+	 * 
+	 * @param string $key
+	 * @param mixed $value
 	 *
-	 * Provides the implementations of the inherited abstract
-	 * methods.  The implementation uses PHP sessions to maintain
-	 * a store for authorization codes, user ids, CSRF states, and
-	 * access tokens.
+	 * @return $this
 	 */
 	public function set($key, $value)
 	{
 		if (!in_array($key, self::$supportedKeys)) {
-			return;
+			return $this;
 		}
 
 		$this->session->$key = $value;
+
+		return $this;
 	}
 
 	/**
@@ -78,25 +81,29 @@ class SessionStorage extends Nette\Object
 	 *
 	 * @param string $key
 	 *
-	 * @return void
+	 * @return $this
 	 */
 	public function clear($key)
 	{
 		if (!in_array($key, self::$supportedKeys)) {
-			return;
+			return $this;
 		}
 
 		unset($this->session->$key);
+
+		return $this;
 	}
 
 	/**
 	 * Clear all data from the persistent storage
 	 *
-	 * @return void
+	 * @return $this
 	 */
 	public function clearAll()
 	{
 		$this->session->remove();
+
+		return $this;
 	}
 
 	/**
@@ -114,10 +121,14 @@ class SessionStorage extends Nette\Object
 	/**
 	 * @param string $name
 	 * @param mixed $value
+	 * 
+	 * @return $this
 	 */
 	public function __set($name, $value)
 	{
 		$this->set($name, $value);
+
+		return $this;
 	}
 
 	/**
@@ -136,9 +147,13 @@ class SessionStorage extends Nette\Object
 
 	/**
 	 * @param string $name
+	 * 
+	 * @return $this
 	 */
 	public function __unset($name)
 	{
 		$this->clear($name);
+
+		return $this;
 	}
 }

@@ -79,6 +79,7 @@ class CommentsExtension extends Nette\DI\CompilerExtension implements ITranslati
 		$builder = $this->getContainerBuilder();
 
 		Utils\Validators::assert($config['posting']['blacklist'], 'string', 'Blacklist');
+
 		if (!in_array($config['displaying']['ordering'], $allowed = array('ASC', 'DESC'))) {
 			throw new Utils\AssertionException("Key displaying/ordering is expected to be one of [" . implode(', ', $allowed) . "], but '" . $config['displaying']['ordering'] . "' was given.");
 		}
@@ -114,8 +115,8 @@ class CommentsExtension extends Nette\DI\CompilerExtension implements ITranslati
 
 		// Define components
 		$builder->addDefinition($this->prefix('comments'))
-			->setClass('IPub\Comments\Components\Comments')
-			->setImplement('IPub\Comments\Components\IComments')
+			->setClass('IPub\Comments\Components\Control')
+			->setImplement('IPub\Comments\Components\IControl')
 			->addTag('cms.components');
 
 		// Define events
@@ -125,7 +126,18 @@ class CommentsExtension extends Nette\DI\CompilerExtension implements ITranslati
 
 		// Register template helpers
 		$builder->addDefinition($this->prefix('helpers'))
-			->setClass('IPub\Comments\Templating\Helpers');
+			->setClass('IPub\Comments\Templating\Helpers')
+			->setFactory($this->prefix('@factory') . '::createTemplateHelpers')
+			->setInject(FALSE);
+
+		// Install extension latte macros
+		$latteFactory = $builder->hasDefinition('nette.latteFactory')
+			? $builder->getDefinition('nette.latteFactory')
+			: $builder->getDefinition('nette.latte');
+
+		$latteFactory
+			->addSetup('addFilter', array('formatComment', array($this->prefix('@helpers'), 'formatComment')))
+			->addSetup('addFilter', array('showAvatar', array($this->prefix('@helpers'), 'showAvatar')));
 	}
 
 	/**

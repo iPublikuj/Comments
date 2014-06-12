@@ -17,6 +17,8 @@ namespace IPub\Comments\Users;
 use Nette;
 use Nette\Caching;
 
+use Tracy\Debugger;
+
 use IPub\Comments\Entities;
 
 class System extends Guest
