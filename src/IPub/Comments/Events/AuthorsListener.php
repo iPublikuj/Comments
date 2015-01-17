@@ -88,7 +88,7 @@ class AuthorsListener extends Nette\Object implements Events\Subscriber
 	public function getSubscribedEvents()
 	{
 		return array(
-			'Nette\\Application\\Application::onPresenter',
+			//'Nette\\Application\\Application::onPresenter',
 			'Nette\\Application\\Application::onResponse'
 		);
 	}
@@ -140,6 +140,7 @@ class AuthorsListener extends Nette\Object implements Events\Subscriber
 	 */
 	public function onPresenter(Application\Application $application, Application\UI\Presenter $presenter)
 	{
+		return;
 		// Get login (app users always win)
 		$login = $this->session->login;
 
