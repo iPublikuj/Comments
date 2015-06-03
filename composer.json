@@ -1,21 +1,22 @@
 {
 	"name"			: "ipub/comments",
 	"type"			: "library",
-	"description"	: "Nette extension for adding comments support for various items on iPublikuj framework",
-	"keywords"		: ["comments", "nette comments", "comments support managing", "nette", "ipub", "framework", "tools"],
-	"homepage"		: "https://github.com/iPublikuj/Comments",
+	"description"	: "Extension for adding comments support on various items for Nette Framework",
+	"keywords"		: ["nette", "comments", "comments support managing", "nette", "ipub", "ipublikuj", "framework", "tools"],
+	"homepage"		: "https://github.com/iPublikuj/comments",
 	"license"		: ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
 
 	"authors": [
 		{
-			"name"		: "Adam Kadlec",
+			"name"		: "iPublikuj:cms",
+			"email"		: "info@ipublikuj.eu",
 			"homepage"	: "http://www.ipublikuj.eu/"
 		}
 	],
 
 	"support":{
 		"email"		:"support@ipublikuj.eu",
-		"issues"	:"https://github.com/iPublikuj/Comments/issues"
+		"issues"	:"https://github.com/iPublikuj/comments/issues"
 	},
 
 	"require": {
