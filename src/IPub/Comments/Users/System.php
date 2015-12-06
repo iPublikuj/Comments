@@ -60,7 +60,7 @@ class System extends Guest
 				// Try to get avatar from system user
 				if ($avatarPath = $this->systemUser->getAvatarPath()) {
 					// Check given avatar file with path
-					if (file_exists($avatarPath) && filesize($avatarPath) <= 10240 && preg_match('/\.(gif|png|jpg)$/i', $avatarPath, $extension)) {
+					if (is_file($avatarPath) && filesize($avatarPath) <= 10240 && preg_match('/\.(gif|png|jpg)$/i', $avatarPath, $extension)) {
 						// Create default avatar in base64 coding
 						$avatarUrl = sprintf('data:image/%s;base64,%s', str_replace('jpg', 'jpeg', strtolower($extension[1])), base64_encode(file_get_contents($avatarPath)));
 
