@@ -72,7 +72,7 @@ class Control extends Application\UI\Control
 	/**
 	 * @var string
 	 */
-	protected $templatePath;
+	protected $templateFile;
 
 	/**
 	 * @var Localization\ITranslator
@@ -180,21 +180,21 @@ class Control extends Application\UI\Control
 	/**
 	 * Change default component template path
 	 *
-	 * @param string $templatePath
+	 * @param string $templateFile
 	 *
 	 * @return $this
 	 *
 	 * @throws \Nette\FileNotFoundException
 	 */
-	public function setTemplate($templatePath)
+	public function setTemplate($templateFile)
 	{
 		// Check if template file exists...
-		if (!is_file($templatePath)) {
+		if (!is_file($templateFile)) {
 			// ...if not throw exception
 			throw new Nette\FileNotFoundException;
 		}
 
-		$this->templatePath = $templatePath;
+		$this->templateFile = $templateFile;
 
 		return $this;
 	}
@@ -240,8 +240,8 @@ class Control extends Application\UI\Control
 		}
 
 		// Get component template file
-		$templatePath = !empty($this->templatePath) ? $this->templatePath : __DIR__ . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
-		$this->template->setFile($templatePath);
+		$templateFile = !empty($this->templateFile) ? $this->templateFile : __DIR__ . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
+		$this->template->setFile($templateFile);
 
 		// Render component template
 		$this->template->render();
